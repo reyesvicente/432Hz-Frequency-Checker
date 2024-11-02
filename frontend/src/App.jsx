@@ -23,7 +23,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('https://four32hz-frequency-checker-1.onrender.com/upload', {
+      const response = await fetch('http://localhost:8000/upload', {
         method: 'POST',
         body: formData,
       });

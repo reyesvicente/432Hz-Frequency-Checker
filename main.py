@@ -17,10 +17,14 @@ app.add_middleware(
 )
 
 @app.post("/upload")
-async def analyze_audio(file: UploadFile = File(..., max_length=20 * 1024 * 1024)):
+async def analyze_audio(file: UploadFile = File(...)):
     # Check if file is an audio type
     if not file.content_type.startswith("audio/"):
         raise HTTPException(status_code=400, detail="File must be an audio type")
+    
+    # Check file size after receiving the file
+    if file.size > 20 * 1024 * 1024:  # 20MB in bytes
+        raise HTTPException(status_code=400, detail="File size should not exceed 20MB.")
 
     try:
         # Load the audio file using pydub
