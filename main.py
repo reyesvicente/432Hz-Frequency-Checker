@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 @app.post("/upload")
-async def analyze_audio(file: UploadFile = File(...)):
+async def analyze_audio(file: UploadFile = File(..., max_length=20 * 1024 * 1024)):
     # Check if file is an audio type
     if not file.content_type.startswith("audio/"):
         raise HTTPException(status_code=400, detail="File must be an audio type")

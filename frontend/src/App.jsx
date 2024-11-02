@@ -4,9 +4,17 @@ function App() {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [fileSizeError, setFileSizeError] = useState('');
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile && selectedFile.size > 20 * 1024 * 1024) { // 20MB in bytes
+      setFileSizeError('File size should not exceed 20MB.');
+      setFile(null); // Clear the file state
+    } else {
+      setFileSizeError(''); // Clear the error message
+      setFile(selectedFile);
+    }
   };
 
   const handleSubmit = async () => {
@@ -38,6 +46,9 @@ function App() {
           onChange={handleFileChange} 
           className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg"
         />
+        {fileSizeError && (
+          <p className="mt-2 text-red-500">{fileSizeError}</p> // Display error message
+        )}
         
         <button 
           onClick={handleSubmit} 
