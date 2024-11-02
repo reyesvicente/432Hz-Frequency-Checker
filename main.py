@@ -1,10 +1,19 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydub import AudioSegment
 import io
 import numpy as np
 from scipy.fft import rfft, rfftfreq
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://432-hz-frequency-checker.vercel.app/"],  # React frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/upload")
 async def analyze_audio(file: UploadFile = File(...)):
