@@ -522,7 +522,7 @@ wcwidth==0.2.13
 weasyprint==62.3
 webcolors==1.13
 webencodings==0.5.1
-WebOb==1.8.7
+WebOb==1.8.8
 websocket-client==1.8.0
 websockets==10.4
 websockify==0.12.0
