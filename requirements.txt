@@ -303,7 +303,7 @@ pyVNC==0.1
 pywerview==0.3.3
 pyxdg==0.28
 PyYAML==6.0.2
-redis==4.3.4
+redis==4.4.4
 referencing==0.35.1
 regex==2024.7.24
 repoze.lru==0.7
