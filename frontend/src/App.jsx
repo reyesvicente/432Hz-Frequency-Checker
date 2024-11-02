@@ -40,6 +40,7 @@ function App() {
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="flex flex-col items-center bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">432Hz Frequency Checker</h2>
+        <p className="text-lg text-gray-500 mb-4">If it fails at first try, submit it again. The backend sleeps when it detects no activity.</p>
         
         <input 
           type="file" 
