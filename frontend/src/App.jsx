@@ -5,6 +5,27 @@ function App() {
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [fileSizeError, setFileSizeError] = useState('');
+  const [frequencyMeaning, setFrequencyMeaning] = useState('');
+
+  const interpretFrequency = (frequency) => {
+    if (!frequency) return '';
+    
+    // Extract the numeric frequency value from the result string
+    const match = frequency.match(/(\d+\.?\d*)/);
+    if (!match) return '';
+    
+    const freq = parseFloat(match[1]);
+    
+    if (Math.abs(freq - 432) <= 5) {
+      return "🎵 This frequency is close to 432 Hz - known as 'Verdi's A' or the 'natural frequency'. Historically used by classical composers like Mozart and Verdi, this frequency is believed to be mathematically consistent with the patterns of the universe and nature. Some people report feeling more relaxed and centered when listening to music tuned to 432 Hz.";
+    } else if (Math.abs(freq - 440) <= 5) {
+      return "🎼 This frequency is close to 440 Hz - the modern standard pitch (A4) established in 1955. Most contemporary music is tuned to this frequency. While it's the current standard, some argue it creates a slightly more tense or energetic feeling compared to 432 Hz.";
+    } else if (freq < 432) {
+      return "⬇️ This frequency is below 432 Hz. Lower frequencies generally create deeper, more grounding tones. In some musical traditions, lower frequencies are associated with root chakras and earthing energies.";
+    } else {
+      return "⬆️ This frequency is above 432 Hz. Higher frequencies typically create brighter, more energetic tones. In some traditions, higher frequencies are associated with higher chakras and spiritual awakening.";
+    }
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -19,6 +40,7 @@ function App() {
 
   const handleSubmit = async () => {
     setIsLoading(true);
+    setFrequencyMeaning('');
     const formData = new FormData();
     formData.append('file', file);
 
@@ -29,16 +51,18 @@ function App() {
       });
       const data = await response.json();
       setResult(data.message);
+      setFrequencyMeaning(interpretFrequency(data.message));
     } catch (error) {
       setResult("An error occurred. Please try again.");
+      setFrequencyMeaning('');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="flex flex-col items-center bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 py-8">
+      <div className="flex flex-col items-center bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center mx-4">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">432Hz Frequency Checker</h2>
         <p className="text-lg text-gray-500 mb-4">If it fails at first try, submit it again. The backend sleeps when it detects no activity.</p>
         
@@ -48,7 +72,7 @@ function App() {
           className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg"
         />
         {fileSizeError && (
-          <p className="mt-2 text-red-500">{fileSizeError}</p> // Display error message
+          <p className="mt-2 text-red-500">{fileSizeError}</p>
         )}
         
         <button 
@@ -66,7 +90,14 @@ function App() {
         )}
 
         {result && !isLoading && (
-          <p className="mt-4 text-gray-700">{result}</p>
+          <div className="mt-4 space-y-4">
+            <p className="text-gray-700 font-semibold">{result}</p>
+            {frequencyMeaning && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="text-gray-600 text-sm leading-relaxed">{frequencyMeaning}</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
