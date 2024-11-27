@@ -16,14 +16,49 @@ function App() {
     
     const freq = parseFloat(match[1]);
     
-    if (Math.abs(freq - 432) <= 5) {
-      return "🎵 This frequency is close to 432 Hz - known as 'Verdi's A' or the 'natural frequency'. Historically used by classical composers like Mozart and Verdi, this frequency is believed to be mathematically consistent with the patterns of the universe and nature. Some people report feeling more relaxed and centered when listening to music tuned to 432 Hz.";
-    } else if (Math.abs(freq - 440) <= 5) {
-      return "🎼 This frequency is close to 440 Hz - the modern standard pitch (A4) established in 1955. Most contemporary music is tuned to this frequency. While it's the current standard, some argue it creates a slightly more tense or energetic feeling compared to 432 Hz.";
-    } else if (freq < 432) {
-      return "⬇️ This frequency is below 432 Hz. Lower frequencies generally create deeper, more grounding tones. In some musical traditions, lower frequencies are associated with root chakras and earthing energies.";
+    // More detailed frequency interpretation
+    if (Math.abs(freq - 432) <= 2) {
+      return "🎵 Perfect 432 Hz - Known as 'Verdi's A' or the 'natural frequency'. This frequency:\n" +
+             "• Aligns with the natural vibrations of the universe (Pi and Phi ratios)\n" +
+             "• Was favored by classical composers like Mozart and Verdi\n" +
+             "• Is believed to promote healing and spiritual well-being\n" +
+             "• Creates a warmer, more relaxing sound experience\n" +
+             "• Resonates with the heart chakra frequency";
+    } else if (freq >= 430 && freq < 432) {
+      return "🎵 Very close to 432 Hz (slightly flat). This frequency still carries many beneficial properties of the 432 Hz resonance. Consider fine-tuning slightly upward for perfect alignment.";
+    } else if (freq > 432 && freq <= 434) {
+      return "🎵 Very close to 432 Hz (slightly sharp). This frequency maintains most benefits of the 432 Hz resonance. Consider fine-tuning slightly downward for perfect alignment.";
+    } else if (Math.abs(freq - 440) <= 2) {
+      return "🎼 Perfect 440 Hz - The modern concert pitch standard:\n" +
+             "• Established as the international standard in 1955\n" +
+             "• Used in most contemporary music\n" +
+             "• Creates a brighter, more brilliant sound\n" +
+             "• Some argue it may create subtle tension in the listener\n" +
+             "• Excellent for performances requiring high energy";
+    } else if (freq >= 438 && freq < 440) {
+      return "🎼 Very close to 440 Hz (slightly flat). This is within acceptable range for modern concert pitch, though some fine-tuning upward might be desired for strict concert standards.";
+    } else if (freq > 440 && freq <= 442) {
+      return "🎼 Very close to 440 Hz (slightly sharp). This is within acceptable range for modern concert pitch, though some orchestras intentionally tune slightly sharp for a brighter sound.";
+    } else if (freq < 430) {
+      return `⬇️ Low frequency (${freq} Hz):\n` +
+             "• Creates deeper, more grounding tones\n" +
+             "• Associated with root and sacral chakras\n" +
+             "• May induce calming, meditative states\n" +
+             "• Good for meditation and relaxation music\n" +
+             "• Consider tuning higher if aiming for 432 Hz or 440 Hz standard";
+    } else if (freq > 442) {
+      return `⬆️ High frequency (${freq} Hz):\n` +
+             "• Produces brighter, more energetic tones\n" +
+             "• Associated with crown and third-eye chakras\n" +
+             "• May increase alertness and energy\n" +
+             "• Common in some Eastern musical traditions\n" +
+             "• Consider tuning lower if aiming for 432 Hz or 440 Hz standard";
     } else {
-      return "⬆️ This frequency is above 432 Hz. Higher frequencies typically create brighter, more energetic tones. In some traditions, higher frequencies are associated with higher chakras and spiritual awakening.";
+      return `🎵 Intermediate frequency (${freq} Hz):\n` +
+             "• Falls between common tuning standards\n" +
+             "• May create unique tonal characteristics\n" +
+             "• Consider adjusting toward 432 Hz for natural resonance\n" +
+             "• Or tune to 440 Hz for modern standard alignment";
     }
   };
 
