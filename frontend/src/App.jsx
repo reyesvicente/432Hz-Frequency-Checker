@@ -104,7 +104,14 @@ function App() {
         <input 
           type="file" 
           onChange={handleFileChange} 
-          className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg"
+          className="block w-full text-sm text-gray-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-lg file:border-0
+            file:text-sm file:font-semibold
+            file:bg-blue-50 file:text-blue-700
+            hover:file:bg-blue-100
+            file:cursor-pointer cursor-pointer
+            focus:outline-none"
         />
         {fileSizeError && (
           <p className="mt-2 text-red-500">{fileSizeError}</p>
@@ -112,10 +119,12 @@ function App() {
         
         <button 
           onClick={handleSubmit} 
-          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
+          className="mt-4 w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 
+            transition-colors duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed
+            font-medium text-sm shadow-sm hover:shadow-md active:scale-[0.98]"
           disabled={!file || isLoading}
         >
-          Check Frequency
+          {isLoading ? 'Processing...' : 'Check Frequency'}
         </button>
 
         {isLoading && (
