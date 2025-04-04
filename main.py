@@ -45,7 +45,7 @@ async def analyze_audio(file: UploadFile = File(...)):
 
         # Check if the dominant frequency is close to 432Hz
         tolerance = 5  # Hz
-        is_close_to_432 = abs(dominant_freq - 432) <= tolerance
+        is_close_to_432 = bool(abs(dominant_freq - 432) <= tolerance)  # Convert numpy.bool to Python bool
 
         return {
             "dominant_frequency": f"{dominant_freq:.2f} Hz",
