@@ -1,8 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydub import AudioSegment
-import io
 import numpy as np
+import librosa
 from scipy.fft import rfft, rfftfreq
 
 app = FastAPI()
@@ -10,7 +9,7 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,25 +26,24 @@ async def analyze_audio(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="File size should not exceed 20MB.")
 
     try:
-        # Read the file efficiently without holding it in memory
-        audio_data = io.BytesIO(await file.read())
-        
-        # Convert to mono and load audio
-        audio = AudioSegment.from_file(audio_data).set_channels(1)
-        samples = np.array(audio.get_array_of_samples(), dtype=np.float32)
-        sample_rate = audio.frame_rate
-
-        # Free up memory
-        audio_data.close()
+        # Load audio using librosa
+        # We load only 60 seconds to save memory
+        # sr=None preserves the native sampling rate
+        # mono=True mixes down to mono (standard for frequency analysis)
+        y, sr = librosa.load(file.file, sr=None, mono=True, duration=60)
 
         # Perform FFT to get frequency domain and find the peak frequency
-        fft_vals = rfft(samples)
-        fft_freqs = rfftfreq(len(samples), d=1/sample_rate)
-        dominant_freq = fft_freqs[np.argmax(np.abs(fft_vals))]
+        fft_vals = rfft(y)
+        fft_freqs = rfftfreq(len(y), d=1/sr)
+
+        # Find peak frequency
+        # We index [1:] to skip the 0Hz (DC) component which often dominates
+        peak_idx = np.argmax(np.abs(fft_vals[1:])) + 1
+        dominant_freq = fft_freqs[peak_idx]
 
         # Check if the dominant frequency is close to 432Hz
         tolerance = 5  # Hz
-        is_close_to_432 = bool(abs(dominant_freq - 432) <= tolerance)  # Convert numpy.bool to Python bool
+        is_close_to_432 = bool(abs(dominant_freq - 432) <= tolerance)
 
         return {
             "dominant_frequency": f"{dominant_freq:.2f} Hz",
@@ -54,9 +52,8 @@ async def analyze_audio(file: UploadFile = File(...)):
                        f"{'close to' if is_close_to_432 else 'not close to'} 432Hz."
         }
 
-    except IndexError:
-        raise HTTPException(status_code=400, detail="Invalid audio file or unsupported format")
-
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
